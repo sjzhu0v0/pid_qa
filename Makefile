@@ -1,4 +1,4 @@
-DIR_BASE=$(shell pwd)
+DIR_BASE=/lustre/alice/users/szhu/work/Analysis/PairFlow/include
 FLAGS_INCLUDE=-I$(DIR_BASE)/include -I$(DIR_BASE)/macro
 FLAGS_ROOT=$(shell root-config --cflags --libs)
 FLAGS_MINUIT=-lMinuit
