@@ -173,7 +173,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
     }
   }
 
-  ROOT::RDF::Experimental::AddProgressBar(rdf);
+  ROOT::RDF::Experimental::AddProgressBar(rdf_withRun_mip);
   RunGraphs(gRResultHandles2);
 
   // set lable for profile_run
