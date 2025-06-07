@@ -119,7 +119,6 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
       "fRunNumber", std::set<int>());
 
   gRResultHandles.push_back(unique_runs_rp);
-  ROOT::RDF::Experimental::AddProgressBar(rdf);
   RunGraphs(gRResultHandles);
 
   set<int> unique_runs = unique_runs_rp.GetValue();
@@ -174,6 +173,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
     }
   }
 
+  ROOT::RDF::Experimental::AddProgressBar(rdf);
   RunGraphs(gRResultHandles2);
 
   // set lable for profile_run
