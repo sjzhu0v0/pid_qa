@@ -158,7 +158,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
 
       for (auto str_y : vec_str_y) {
         TString tag = tag1 + "_" + tag2;
-        TString name = str_y.fName + "_" + tag;
+        TString name = "fRunNumber_" + str_y.fName + "_" + tag;
         TString title(condition1);
         TString title_x = "Run";
         TString title_y = "<" + str_y.fTitle + " " + tag2 + ">";

@@ -57,8 +57,8 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
 #define GroupGraph(...)                                                        \
   g_nn = SingleGraph(nn, __VA_ARGS__);                                         \
   g_bb = SingleGraph(bb, __VA_ARGS__);                                         \
-  MRootGraphic::StyleHistCommonGraph(g_nn);                                    \
-  MRootGraphic::StyleHistCommonGraph(g_bb);                                    \
+  MRootGraphic::StyleHistCommon(g_nn);                                         \
+  MRootGraphic::StyleHistCommon(g_bb);                                         \
   maxy = TMath::Max(SingleHist(nn, __VA_ARGS__)->GetMaximum(),                 \
                     SingleHist(bb, __VA_ARGS__)->GetMaximum());                \
   miny = TMath::Min(SingleHist(nn, __VA_ARGS__)->GetMinimum(),                 \
@@ -132,8 +132,8 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
       TH1D *sepPower_bb = (TH1D *)file_bb->Get(name_tag);
       TGraph *g_sepPower_nn = GetGraph(sepPower_nn, "g_" + name_tag + "_nn");
       TGraph *g_sepPower_bb = GetGraph(sepPower_bb, "g_" + name_tag + "_bb");
-      MRootGraphic::StyleHistCommonGraph(g_sepPower_nn);
-      MRootGraphic::StyleHistCommonGraph(g_sepPower_bb);
+      MRootGraphic::StyleHistCommon(g_sepPower_nn);
+      MRootGraphic::StyleHistCommon(g_sepPower_bb);
       g_sepPower_nn->SetLineColor(kRed);
       g_sepPower_bb->SetLineColor(kBlue);
       double max =
