@@ -148,3 +148,22 @@ void SeparationPower(TString path_input = "~/test/output.root",
                      int nn_bb = kNN) {
   CalculateSeparationPower(path_input, path_output, nn_bb);
 }
+
+int main(int argc, char **argv) {
+  TApplication app("app", &argc, argv);
+
+  TString path_input = "~/test/output.root";
+  TString path_output = "~/test/sepPower.root";
+  int nn_bb = kNN;
+
+  if (argc > 1)
+    path_input = argv[1];
+  if (argc > 2)
+    path_output = argv[2];
+  if (argc > 3)
+    nn_bb = atoi(argv[3]);
+
+  SeparationPower(path_input, path_output, nn_bb);
+
+  return 0;
+}
