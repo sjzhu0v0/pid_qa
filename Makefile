@@ -4,7 +4,11 @@ FLAGS_ROOT=$(shell root-config --cflags --libs)
 FLAGS_MINUIT=-lMinuit -Wno-narrowing -O2
 
 all: \
-	macro/SkimTreeReading.exe
+	macro/SkimTreeReading.exe \
+	draw/ComparisonSeparationPower.exe
 
 macro/SkimTreeReading.exe: macro/SkimTreeReading.C
+	g++ -o $@ $^ $(FLAGS_INCLUDE) $(FLAGS_ROOT)
+
+draw/ComparisonSeparationPower.exe: draw/ComparisonSeparationPower.C
 	g++ -o $@ $^ $(FLAGS_INCLUDE) $(FLAGS_ROOT)

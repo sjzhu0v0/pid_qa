@@ -15,7 +15,8 @@ typedef struct StrGausFit {
   TH1D *hSigma;
 } StrGausFit;
 
-StrGausFit AddFit(TH2 *h2d, double limit_low, double limit_high) {
+StrGausFit AddFit(TH2 *h2d, double limit_low, double limit_high,
+                  bool no_fit = true) {
   // TF1 *f1 = new TF1("f1", "gaus"); change it to double
   TString name_h2d = h2d->GetName();
   TString title_h2d = h2d->GetTitle();
@@ -35,6 +36,17 @@ StrGausFit AddFit(TH2 *h2d, double limit_low, double limit_high) {
   TH1D *hSigma = (TH1D *)aSlices_electron.At(2)->Clone(name_h2d + "_sigma");
   hSigma->SetTitle(title_h2d);
   hSigma->GetYaxis()->SetTitle("sigma " + titleY_h2d);
+
+  if (no_fit) {
+    // set hMean and hSigma as profile histograms
+    for (int i_x_2d = 1; i_x_2d <= h2d->GetNbinsX(); i_x_2d++) {
+      TH1D *h1_temp = (TH1D *)h2d->ProjectionY("h1_temp", i_x_2d, i_x_2d);
+      double mean = h1_temp->GetMean();
+      double sigma = h1_temp->GetRMS();
+      hMean->SetBinContent(i_x_2d, mean);
+      hMean->SetBinError(i_x_2d, 0);
+    }
+  }
 
   gFileOutput->cd();
   h2d->Write();
@@ -101,8 +113,8 @@ void GetSeparationPower(TString tag_x = "fTgl", TString tag_ncls = "AllNcls",
   TH2D *delta_dEdx_pion =
       (TH2D *)gFileInput->Get(tag_x + "_delta_dEdx_" + tag_ncls + "_Pion");
 
-  StrGausFit fit_dEdx_elec = AddFit(dEdx_elec, 60, 100);
-  StrGausFit fit_dEdx_pion = AddFit(dEdx_pion, 40, 60);
+  StrGausFit fit_dEdx_elec = AddFit(dEdx_elec, 60, 100, nn_bb == kNN);
+  StrGausFit fit_dEdx_pion = AddFit(dEdx_pion, 40, 60, nn_bb == kNN);
   StrGausFit fit_delta_dEdx_elec = AddFit(delta_dEdx_elec, -20, 20);
   StrGausFit fit_delta_dEdx_pion = AddFit(delta_dEdx_pion, -20, 20);
 

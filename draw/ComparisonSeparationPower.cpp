@@ -3,6 +3,9 @@
 #include "TGraph.h"
 #include "TLegend.h"
 
+TString gTag_nn = "NN";
+TString gTag_bb = "BB";
+
 TGraph *GetGraph(TH1D *h1, TString name) {
   TGraph *g = new TGraph(h1->GetNbinsX());
   for (int i = 0; i < h1->GetNbinsX(); i++) {
@@ -39,18 +42,42 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   GetGraphPlotlottingDetailed(bb, sigma, delta_dEdx);
 
   TGraph *g_nn, *g_bb;
+  TH1D *h_frame;
+  double maxy, miny;
+  double maxy_user, miny_user;
+  double maxx_user, minx_user;
+
   c->Divide(2, 2);
 #define SingleGraph(nn_bb, mean_sigma, var, species)                           \
   g_##mean_sigma##_##nn_bb##_##var##species
+
+#define SingleHist(n_bb, mean_sigma, var, species)                             \
+  mean_sigma##_##n_bb##_##var##species
 
 #define GroupGraph(...)                                                        \
   g_nn = SingleGraph(nn, __VA_ARGS__);                                         \
   g_bb = SingleGraph(bb, __VA_ARGS__);                                         \
   MRootGraphic::StyleHistCommonGraph(g_nn);                                    \
   MRootGraphic::StyleHistCommonGraph(g_bb);                                    \
+  maxy = TMath::Max(SingleHist(nn, __VA_ARGS__)->GetMaximum(),                 \
+                    SingleHist(bb, __VA_ARGS__)->GetMaximum());                \
+  miny = TMath::Min(SingleHist(nn, __VA_ARGS__)->GetMinimum(),                 \
+                    SingleHist(bb, __VA_ARGS__)->GetMinimum());                \
+  maxx_user = g_nn->GetXaxis()->GetXmax();                                     \
+  minx_user = g_nn->GetXaxis()->GetXmin();                                     \
+  maxy_user = maxy + 0.1 * (maxy - miny);                                      \
+  miny_user = miny - 0.1 * (maxy - miny);                                      \
   g_nn->SetLineColor(kRed);                                                    \
   g_bb->SetLineColor(kBlue);                                                   \
-  g_nn->Draw("AL");                                                            \
+  h_frame = new TH1D(Form("h_frame_%d", GenerateUID()), "", 1, minx_user,      \
+                     maxx_user);                                               \
+  h_frame->GetYaxis()->SetRangeUser(miny_user, maxy_user);                     \
+  h_frame->GetXaxis()->SetTitle(g_nn->GetXaxis()->GetTitle());                 \
+  h_frame->GetYaxis()->SetTitle(g_nn->GetYaxis()->GetTitle());                 \
+  h_frame->SetTitle(g_nn->GetTitle());                                         \
+  MRootGraphic::StyleHistCommonHist(h_frame);                                  \
+  h_frame->Draw("AXIS");                                                       \
+  g_nn->Draw("L same");                                                        \
   g_bb->Draw("L same");
 
   c->cd(1);
@@ -67,8 +94,8 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   leg->SetLineStyle(0);
   leg->SetTextSize(0.04);
   leg->SetLineColor(0);
-  leg->AddEntry(g_nn, "NN", "L");
-  leg->AddEntry(g_bb, "BB", "L");
+  leg->AddEntry(g_nn, gTag_nn, "L");
+  leg->AddEntry(g_bb, gTag_bb, "L");
   leg->Draw("same");
 
   c->SaveAs(path_output_graph + "_detailed_" + name_tag + ".json");
@@ -92,8 +119,8 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
   vector<TString> vec_tag_ncls = {"highNcls", "lowNcls", "AllNcls"};
 
   TCanvas *c_sepPower =
-      new TCanvas("canvas_sepPower", "canvas_sepPower", 800, 900);
-  c_sepPower->Divide(2, 3);
+      new TCanvas("canvas_sepPower", "canvas_sepPower", 1200, 800);
+  c_sepPower->Divide(3, 2);
 
   int index = 1;
   for (const auto &tag_x : vec_tag_x) {
@@ -125,8 +152,8 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
         leg->SetLineStyle(0);
         leg->SetLineColor(0);
         leg->SetTextSize(0.04);
-        leg->AddEntry(g_sepPower_nn, "NN", "L");
-        leg->AddEntry(g_sepPower_bb, "BB", "L");
+        leg->AddEntry(g_sepPower_nn, gTag_nn, "L");
+        leg->AddEntry(g_sepPower_bb, gTag_bb, "L");
         leg->Draw("same");
       }
     }
@@ -134,13 +161,41 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
   c_sepPower->SaveAs(path_output_graph + "_sepPower.json");
 }
 
-void SeparationPower(TString path_input_nn = "~/test/sepPower_nn.root",
-                     TString path_input_bb = "~/test/sepPower_bb.root",
-                     TString path_output_graph = "~/test/sepPower_graph") {
+void ComparisonSeparationPower(
+    TString path_input_nn = "~/test/sepPower_nn.root",
+    TString path_input_bb = "~/test/sepPower_bb.root",
+    TString path_output_graph = "~/test/sepPower_graph", TString tag_nn = "NN",
+    TString tag_bb = "BB") {
   TFile *file_nn = new TFile(path_input_nn, "READ");
   TFile *file_bb = new TFile(path_input_bb, "READ");
+
+  gTag_bb = tag_bb;
+  gTag_nn = tag_nn;
 
   MRootGraphic::StyleCommon();
   PlottingDetailed(file_nn, file_bb, path_output_graph);
   PlottingSepPower(file_nn, file_bb, path_output_graph);
+}
+
+int main(int argc, char **argv) {
+  TString path_input_nn = "~/test/sepPower_nn.root";
+  TString path_input_bb = "~/test/sepPower_bb.root";
+  TString path_output_graph = "~/test/sepPower_graph";
+  TString tag_nn = "NN";
+  TString tag_bb = "BB";
+
+  if (argc > 1)
+    path_input_nn = argv[1];
+  if (argc > 2)
+    path_input_bb = argv[2];
+  if (argc > 3)
+    path_output_graph = argv[3];
+  if (argc > 4)
+    tag_nn = argv[4];
+  if (argc > 5)
+    tag_bb = argv[5];
+
+  ComparisonSeparationPower(path_input_nn, path_input_bb, path_output_graph,
+                            tag_nn, tag_bb);
+  return 0;
 }
