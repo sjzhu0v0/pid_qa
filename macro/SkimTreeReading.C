@@ -7,7 +7,7 @@
 
 void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                      TString path_ouptut = "output.root") {
-  ROOT::EnableImplicitMT(4);
+  ROOT::EnableImplicitMT();
   TChain *chain = MRootIO::OpenChain(path_input, "O2tpcskimv0tree");
 
   RDataFrame rdf_pre(*chain);
@@ -119,6 +119,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
       "fRunNumber", std::set<int>());
 
   gRResultHandles.push_back(unique_runs_rp);
+  ROOT::RDF::Experimental::AddProgressBar(rdf);
   RunGraphs(gRResultHandles);
 
   set<int> unique_runs = unique_runs_rp.GetValue();
