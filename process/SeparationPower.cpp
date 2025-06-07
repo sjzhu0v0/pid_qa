@@ -150,8 +150,6 @@ void SeparationPower(TString path_input = "~/test/output.root",
 }
 
 int main(int argc, char **argv) {
-  TApplication app("app", &argc, argv);
-
   TString path_input = "~/test/output.root";
   TString path_output = "~/test/sepPower.root";
   int nn_bb = kNN;
