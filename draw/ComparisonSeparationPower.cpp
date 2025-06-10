@@ -173,6 +173,10 @@ void ComparisonSeparationPower(
   gTag_nn = tag_nn;
 
   MRootGraphic::StyleCommon();
+  gStyle->SetPadTickX(1);
+  gStyle->SetPadTickY(1);
+  gStyle->SetPadGridX(1);
+  gStyle->SetPadGridY(1);
   PlottingDetailed(file_nn, file_bb, path_output_graph);
   PlottingSepPower(file_nn, file_bb, path_output_graph);
 }
