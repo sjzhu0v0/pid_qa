@@ -5,6 +5,7 @@
 
 TString gTag_nn = "NN";
 TString gTag_bb = "BB";
+bool gNoOccupancy = false;
 
 TGraph *GetGraph(TH1D *h1, TString name) {
   TGraph *g = new TGraph(h1->GetNbinsX());
@@ -95,7 +96,8 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   leg->SetTextSize(0.04);
   leg->SetLineColor(0);
   leg->AddEntry(g_nn, gTag_nn, "L");
-  leg->AddEntry(g_bb, gTag_bb, "L");
+  if (gTag_bb != "")
+    leg->AddEntry(g_bb, gTag_bb, "L");
   leg->Draw("same");
 
   c->SaveAs(path_output_graph + "_detailed_" + name_tag + ".json");
@@ -106,6 +108,11 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
 void PlottingDetailed(TFile *file_nn, TFile *file_bb,
                       TString path_output_graph) {
   vector<TString> vec_tag_x = {"fTgl", "fFt0Occ"};
+  if (gNoOccupancy) {
+    // remove fFt0Occ if no occupancy is needed
+    vec_tag_x.erase(remove(vec_tag_x.begin(), vec_tag_x.end(), "fFt0Occ"),
+                    vec_tag_x.end());
+  }
   vector<TString> vec_tag_ncls = {"highNcls", "lowNcls", "AllNcls"};
 
   for (const auto &tag_x : vec_tag_x)
@@ -116,11 +123,16 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb,
 void PlottingSepPower(TFile *file_nn, TFile *file_bb,
                       TString path_output_graph) {
   vector<TString> vec_tag_x = {"fTgl", "fFt0Occ"};
+  if (gNoOccupancy) {
+    // remove fFt0Occ if no occupancy is needed
+    vec_tag_x.erase(remove(vec_tag_x.begin(), vec_tag_x.end(), "fFt0Occ"),
+                    vec_tag_x.end());
+  }
   vector<TString> vec_tag_ncls = {"highNcls", "lowNcls", "AllNcls"};
 
-  TCanvas *c_sepPower =
-      new TCanvas("canvas_sepPower", "canvas_sepPower", 1200, 800);
-  c_sepPower->Divide(3, 2);
+  TCanvas *c_sepPower = new TCanvas("canvas_sepPower", "canvas_sepPower", 1200,
+                                    gNoOccupancy ? 400 : 800);
+  c_sepPower->Divide(3, gNoOccupancy ? 1 : 2);
 
   int index = 1;
   for (const auto &tag_x : vec_tag_x) {
@@ -153,7 +165,8 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
         leg->SetLineColor(0);
         leg->SetTextSize(0.04);
         leg->AddEntry(g_sepPower_nn, gTag_nn, "L");
-        leg->AddEntry(g_sepPower_bb, gTag_bb, "L");
+        if (gTag_bb != "")
+          leg->AddEntry(g_sepPower_bb, gTag_bb, "L");
         leg->Draw("same");
       }
     }
@@ -165,7 +178,7 @@ void ComparisonSeparationPower(
     TString path_input_nn = "~/test/sepPower_nn.root",
     TString path_input_bb = "~/test/sepPower_bb.root",
     TString path_output_graph = "~/test/sepPower_graph", TString tag_nn = "NN",
-    TString tag_bb = "BB") {
+    TString tag_bb = "BB", bool no_occupancy = false) {
   TFile *file_nn = new TFile(path_input_nn, "READ");
   TFile *file_bb = new TFile(path_input_bb, "READ");
 
@@ -187,6 +200,7 @@ int main(int argc, char **argv) {
   TString path_output_graph = "~/test/sepPower_graph";
   TString tag_nn = "NN";
   TString tag_bb = "BB";
+  bool no_occupancy = false;
 
   if (argc > 1)
     path_input_nn = argv[1];
@@ -198,8 +212,10 @@ int main(int argc, char **argv) {
     tag_nn = argv[4];
   if (argc > 5)
     tag_bb = argv[5];
+  if (argc > 6)
+    no_occupancy = TString(argv[6]).Atoi();
 
   ComparisonSeparationPower(path_input_nn, path_input_bb, path_output_graph,
-                            tag_nn, tag_bb);
+                            tag_nn, tag_bb, no_occupancy);
   return 0;
 }
