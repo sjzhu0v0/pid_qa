@@ -78,8 +78,10 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   h_frame->SetTitle(g_nn->GetTitle());                                         \
   MRootGraphic::StyleHistCommonHist(h_frame);                                  \
   h_frame->Draw("AXIS");                                                       \
-  g_nn->Draw("L same");                                                        \
-  g_bb->Draw("L same");
+  if (gTag_nn != "")                                                           \
+    g_nn->Draw("L same");                                                      \
+  if (gTag_bb != "")                                                           \
+    g_bb->Draw("L same");
 
   c->cd(1);
   GroupGraph(mean, dEdx, elec);
@@ -95,7 +97,8 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   leg->SetLineStyle(0);
   leg->SetTextSize(0.04);
   leg->SetLineColor(0);
-  leg->AddEntry(g_nn, gTag_nn, "L");
+  if (gTag_nn != "")
+    leg->AddEntry(g_nn, gTag_nn, "L");
   if (gTag_bb != "")
     leg->AddEntry(g_bb, gTag_bb, "L");
   leg->Draw("same");
@@ -155,8 +158,18 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
       double max_user = max + 0.1 * (max - min);
       double min_user = min - 0.1 * (max - min);
       g_sepPower_nn->GetYaxis()->SetRangeUser(min_user, max_user);
-      g_sepPower_nn->Draw("AL");
-      g_sepPower_bb->Draw("L same");
+      int index_graph = 0;
+      if (gTag_nn != "") {
+        if (index_graph == 0)
+          g_sepPower_nn->Draw("AL");
+        index_graph++;
+      }
+      if (gTag_bb != "") {
+        if (index_graph == 0)
+          g_sepPower_bb->Draw("AL");
+        else
+          g_sepPower_bb->Draw("L same");
+      }
 
       if (index == 2) {
         TLegend *leg = new TLegend(0.5, 0.6, 0.7, 0.8);
@@ -164,7 +177,8 @@ void PlottingSepPower(TFile *file_nn, TFile *file_bb,
         leg->SetLineStyle(0);
         leg->SetLineColor(0);
         leg->SetTextSize(0.04);
-        leg->AddEntry(g_sepPower_nn, gTag_nn, "L");
+        if (gTag_nn != "")
+          leg->AddEntry(g_sepPower_nn, gTag_nn, "L");
         if (gTag_bb != "")
           leg->AddEntry(g_sepPower_bb, gTag_bb, "L");
         leg->Draw("same");
