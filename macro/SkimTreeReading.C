@@ -51,15 +51,18 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                           {0., 130., 1010., 2740., 5130., 8070., 11590., 16010.,
                            22030., 31840., 5.e4});
   StrVar4Hist var_fTgl("fTgl", "Tgl", "", 10, {-1, 1});
+  StrVar4Hist var_pIn("pIn", "p_{in}", "GeV/c", 100, GetLogBin(100, 0.1, 10));
 
   StrVar4Hist var_dEdx("dEdx", "dE/dx", "", 150, {10, 160});
+  StrVar4Hist var_fNSigTPC("fNSigTPC", "n#sigma_{TPC}", "", 100, {-5, 5});
   StrVar4Hist var_dEdx_exp("dEdx_exp", "dE/dx exp", "", 150, {10, 160});
   StrVar4Hist var_delta_dEdx("delta_dEdx", "dE/dx - dE/dx exp", "", 80,
                              {-40, 40});
 
   /* #region: histrograms for separation power calculation */
   vector<StrVar4Hist> vec_str_x = {var_fFt0Occ, var_fTgl};
-  vector<StrVar4Hist> vec_str_y = {var_dEdx, var_dEdx_exp, var_delta_dEdx};
+  vector<StrVar4Hist> vec_str_y = {var_dEdx, var_dEdx_exp, var_delta_dEdx,
+                                   var_fNSigTPC};
 
   TFile *fOutput = new TFile(path_ouptut, "RECREATE");
 
