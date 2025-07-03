@@ -204,6 +204,7 @@ void ComparisonSeparationPower(
   gStyle->SetPadTickY(1);
   gStyle->SetPadGridX(1);
   gStyle->SetPadGridY(1);
+  gNoOccupancy = no_occupancy;
   PlottingDetailed(file_nn, file_bb, path_output_graph);
   PlottingSepPower(file_nn, file_bb, path_output_graph);
 }
