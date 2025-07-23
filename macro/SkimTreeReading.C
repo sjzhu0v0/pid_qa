@@ -75,6 +75,11 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
   vector<array<string, 2>> conditions2_sepPower = {{"isElectron", "Electron"},
                                                    {"isPion", "Pion"}};
 
+#define obj2push_thnd(rdf2push, ...)                                           \
+  TupleTHnDModel tuple_thnd = GetTHnDModelWithTitle(__VA_ARGS__);              \
+  gRResultHandles.push_back(                                                   \
+      rdf2push.HistoND(get<0>(tuple_thnd), get<1>(tuple_thnd)));
+
   auto rdf_mip = rdf.Filter("IsAtFermiPlatu");
   for (auto cond1 : conditions1_sepPower) {
     string condition1 = cond1[0];
@@ -85,6 +90,12 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
 
       auto rdf_selected = rdf_mip.Filter(condition1).Filter(condition2);
 
+      // pIn_fFt0Occ_fNSigTPC_fTgl
+      obj2push_thnd(rdf_selected,
+                    {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, "",
+                    tag2 + "_" + tag1);
+
+      // fFt0Occ,fTgl:dEdx,dEdx_exp,delta_dEdx,fNSigTPC
       for (auto str_x : vec_str_x) {
         for (auto str_y : vec_str_y) {
           TString tag = tag1 + "_" + tag2;
@@ -142,14 +153,8 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                  },
                  {"fRunNumber"});
 
-  // TProfile profile_run("profile_run", "Run Number Profile",
-  // unique_runs.size(),
-  //                      -0.5, unique_runs.size() - 0.5);
-
   vector<RResultHandle> gRResultHandles2;
   auto rdf_withRun_mip = rdf_withRun.Filter("IsAtFermiPlatu");
-  // gRResultHandles2.push_back(
-  //     rdf_withRun.Profile1D(profile_run, "index_runNumber", "fTgl"));
   for (auto cond1 : conditions1_sepPower) {
     string condition1 = cond1[0];
     string tag1 = cond1[1];
