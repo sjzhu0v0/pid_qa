@@ -91,7 +91,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
       auto rdf_selected = rdf.Filter(condition1).Filter(condition2);
       // pIn_fFt0Occ_fNSigTPC_fTgl
       obj2push_thnd(rdf_selected,
-                    {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, "",
+                    {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, condition1,
                     tag2 + "_" + tag1);
 
       auto rdf_selected_mip = rdf_mip.Filter(condition1).Filter(condition2);
