@@ -88,13 +88,13 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
       string condition2 = cond2[0];
       string tag2 = cond2[1];
 
-      auto rdf_selected = rdf_mip.Filter(condition1).Filter(condition2);
-
+      auto rdf_selected = rdf.Filter(condition1).Filter(condition2);
       // pIn_fFt0Occ_fNSigTPC_fTgl
       obj2push_thnd(rdf_selected,
                     {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, "",
                     tag2 + "_" + tag1);
 
+      auto rdf_selected_mip = rdf_mip.Filter(condition1).Filter(condition2);
       // fFt0Occ,fTgl:dEdx,dEdx_exp,delta_dEdx,fNSigTPC
       for (auto str_x : vec_str_x) {
         for (auto str_y : vec_str_y) {
@@ -109,7 +109,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
             title_y += " (" + str_y.fUnit + ")";
           }
           // h2->SetTitle(title + ";" + title_x + ";" + title_y);
-          gRResultHandles.push_back(rdf_selected.Histo2D(
+          gRResultHandles.push_back(rdf_selected_mip.Histo2D(
               GetTH2DModelWithTitle(str_x, str_y,
                                     title + ";" + title_x + ";" + title_y, tag),
               str_x.fName, str_y.fName));
