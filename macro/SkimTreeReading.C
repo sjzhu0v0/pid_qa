@@ -6,9 +6,10 @@
 #include <set>
 
 void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
-                     TString path_ouptut = "output.root") {
+                     TString path_ouptut = "output.root",
+                     TString name_tree = "O2tpcskimv0tree") {
   ROOT::EnableImplicitMT();
-  TChain *chain = MRootIO::OpenChain(path_input, "O2tpcskimv0tree");
+  TChain *chain = MRootIO::OpenChain(path_input, name_tree);
 
   RDataFrame rdf_pre(*chain);
 
@@ -209,8 +210,12 @@ int main(int argc, char **argv) {
 
   TString path_input = argv[1];
   TString path_output = argv[2];
+  TString name_tree = "O2tpcskimv0tree";
 
-  SkimTreeReading(path_input, path_output);
+  if (argc == 4)
+    name_tree = argv[3];
+
+  SkimTreeReading(path_input, path_output, name_tree);
 
   return 0;
 }
