@@ -4,6 +4,7 @@
 #include "TGraph.h"
 #include "TLegend.h"
 
+
 void NSigmaPlotting(
     TString path_input = "/home/szhu/test/SkimmingTreeRead.root",
     TString path_output = "./testPlot") {
@@ -18,7 +19,21 @@ void NSigmaPlotting(
       {"nCluster > 80", "AllNcls"},
   };
 
+  str_cond str_cond_type(conditions2_type);
+  str_cond str_cond_clus(conditions_cluster);
+  using MIndexCond = MIndexAny<str_cond>;
+  MIndexCond index_type(str_cond_type);
+  // MIndexCond index_clus(str_cond);
+
+  // using MIndexCond = MIndexAny<str_cond>;
+
   vector<vector<MHnTool *>> vec_vec_hnt;
+
+  for (auto i_type : index_type) {
+    cout << (int)i_type << endl;
+  }
+
+  // MVec<MHnTool
 
   for (auto cond_cluster : conditions_cluster) {
     vector<MHnTool *> vec_hnt;
@@ -116,14 +131,8 @@ void NSigmaPlotting(
             MDouble sigma(f_gauss.GetParameter(2), f_gauss.GetParError(2));
             MDouble mean(f_gauss.GetParameter(1), f_gauss.GetParError(1));
 
-            vec_all_sigma[i_clus][i_type]
-                .current()
-                .current()
-                .SetBinInfo(sigma);
-            vec_all_mean[i_clus][i_type]
-                .current()
-                .current()
-                .SetBinInfo(mean);
+            vec_all_sigma[i_clus][i_type].currentObject().SetBinInfo(sigma);
+            vec_all_mean[i_clus][i_type].currentObject().SetBinInfo(mean);
           }
         }
       }
