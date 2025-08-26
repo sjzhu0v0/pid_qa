@@ -27,13 +27,11 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   GetProfilePlotlottingDetailed(nn, mean, dEdx_exp);
   GetProfilePlotlottingDetailed(nn, sigma, delta_dEdx);
   GetProfilePlotlottingDetailed(nn, mean, fNSigTPC);
-  GetProfilePlotlottingDetailed(nn, sigma, fNSigTPC);
 
   GetProfilePlotlottingDetailed(bb, mean, dEdx);
   GetProfilePlotlottingDetailed(bb, mean, dEdx_exp);
   GetProfilePlotlottingDetailed(bb, sigma, delta_dEdx);
   GetProfilePlotlottingDetailed(bb, mean, fNSigTPC);
-  GetProfilePlotlottingDetailed(bb, sigma, fNSigTPC);
 
   c->Divide(4, 2);
   TProfile *p_nn, *p_bb;
