@@ -26,11 +26,16 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   GetProfilePlotlottingDetailed(nn, mean, dEdx);
   GetProfilePlotlottingDetailed(nn, mean, dEdx_exp);
   GetProfilePlotlottingDetailed(nn, sigma, delta_dEdx);
+  GetProfilePlotlottingDetailed(nn, mean, fNSigTPC);
+  GetProfilePlotlottingDetailed(nn, sigma, fNSigTPC);
+
   GetProfilePlotlottingDetailed(bb, mean, dEdx);
   GetProfilePlotlottingDetailed(bb, mean, dEdx_exp);
   GetProfilePlotlottingDetailed(bb, sigma, delta_dEdx);
+  GetProfilePlotlottingDetailed(bb, mean, fNSigTPC);
+  GetProfilePlotlottingDetailed(bb, sigma, fNSigTPC);
 
-  c->Divide(3, 2);
+  c->Divide(4, 2);
   TProfile *p_nn, *p_bb;
   double maxy, miny;
   double maxy_user, miny_user;
@@ -59,11 +64,15 @@ void PlottingDetailed(TFile *file_nn, TFile *file_bb, TString path_output_graph,
   c->cd(3);
   GroupProfile(delta_dEdx, elec);
   c->cd(4);
-  GroupProfile(dEdx, pion);
+  GroupProfile(fNSigTPC, elec);
   c->cd(5);
-  GroupProfile(dEdx_exp, pion);
+  GroupProfile(dEdx, pion);
   c->cd(6);
+  GroupProfile(dEdx_exp, pion);
+  c->cd(7);
   GroupProfile(delta_dEdx, pion);
+  c->cd(8);
+  GroupProfile(fNSigTPC, pion);
 
   TLegend *leg = new TLegend(0.6, 0.7, 0.9, 0.9);
   leg->SetFillStyle(0);
