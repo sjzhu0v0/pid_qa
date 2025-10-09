@@ -1,0 +1,74 @@
+{
+  "main": {
+    "title": "PID Check for Tag_RunPeriod",
+    "description": "",
+    "content": [
+      "BasicQABB",
+      "BasicQANN",
+      "SeparationBBandNN"
+    ]
+  },
+  "BasicQABB": {
+    "title": "Basic QA for BB",
+    "description": "Basic QA plots for BB",
+    "content": [
+      "PIDTPC_V0_BB"
+    ]
+  },
+  "BasicQANN": {
+    "title": "Basic QA for NN",
+    "description": "Basic QA plots for NN",
+    "content": [
+      "PIDTPC_V0_NN"
+    ]
+  },
+  "PIDTPC_V0_BB": {
+    "title": "Nsigma distribution from V0 with BB",
+    "description": "TPC PID from V0: 2D histograms of nSigmaTPC vs pT for electrons, pions and protons with single gaussian fits. In each plots, the black line is the mean value and the purple line is the sigma value. ",
+    "content": [
+      "./BB/PID_V0_0.json",
+      "PIDTPC_4D_V0_BB"
+    ]
+  },
+  "PIDTPC_4D_V0_BB": {
+    "title": "Detailed check for nsigma fit from V0 with BB",
+    "description": "Nsigma fit results from V0 including fit reslutls vs pT and eta.",
+    "content": [
+      "./BB/V0/h_nSigmaTPC_vs_Eta_TPCnCls_V0.json",
+      "./BB/V0/h_nSigmaTPC_vs_pT_TPCnCls_V0.json",
+      "./BB/V0_elec/h_nSigmaTPC_TPCnCls_V0_elec.json"
+    ]
+  },
+  "PIDTPC_V0_NN": {
+    "title": "Nsigma distribution from V0 with NN",
+    "description": "TPC PID from V0: 2D histograms of nSigmaTPC vs pT for electrons, pions and protons with single gaussian fits. In each plots, the black line is the mean value and the purple line is the sigma value. ",
+    "content": [
+      "./NN/PID_V0_0.json",
+      "PIDTPC_4D_V0_NN"
+    ]
+  },
+  "PIDTPC_4D_V0_NN": {
+    "title": "Detailed check for nsigma fit from V0 with NN",
+    "description": "Nsigma fit results from V0 including fit reslutls vs pT and eta.",
+    "content": [
+      "./NN/V0/h_nSigmaTPC_vs_Eta_TPCnCls_V0.json",
+      "./NN/V0/h_nSigmaTPC_vs_pT_TPCnCls_V0.json",
+      "./NN/V0_elec/h_nSigmaTPC_TPCnCls_V0_elec.json"
+    ]
+  },
+  "SeparationBBandNN": {
+    "title": "Separation power",
+    "description": "BB and NN are labeled in the legend, the scale of Y-axis is the same for all plots in this section. Separation power is calculated from pure pion and electron samples from V0 selection. The mean dEdx of BB is just from the gaussian fit results of dEdx distribution. But the mean dEdx of NN is from the mean of dEdx_exp.",
+    "content": [
+      "SepPower",
+      "SeparationBBandNN_Detail"
+    ]
+  },
+  "SeparationBBandNN_Detail" : {
+    "title": "Detailed check for separation power",
+    "description": "Detailed check for separation power. Here, the dEdx of NN is the mean value of dEdx_exp.",
+    "content": [
+      "sepPowerDetailed"
+    ]
+  }
+}
