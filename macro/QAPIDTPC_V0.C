@@ -48,12 +48,10 @@ TCanvas *fCanvas = 0x0;
 
 TString gTag_nnObb = "w/o NN";
 
-void QAPIDTPC_V0(
-    const char *inputFile = "/home/szhu/work/alice/tpc_pid/AutoQA/test/data/NN/"
-                            "AnalysisResults.root",
-    TString outputFile =
-        "/home/szhu/work/alice/tpc_pid/AutoQA/test/results2/NN/PID_V0.pdf",
-    TString tag_nnObb = "with NN") {
+void QAPIDTPC_V0(const char *inputFile =
+                     "/home/szhu/test/AnalysisResults_merge_LHC23zzh.root",
+                 TString outputFile = "/home/szhu/test/output/PID_V0.pdf",
+                 TString tag_nnObb = "with NN") {
 
   gTag_nnObb = tag_nnObb;
   SetupStyle();
@@ -169,7 +167,8 @@ void PublishCanvas(TDirectoryFile *qaList) {
   pt.SetFillColor(0);
   pt.SetTextSizePixels(16);
 
-  pt.AddText(Form("v0-pid-qa (" + gTag_nnObb + ")"));
+  pt.AddText("v0-pid-qa (" + gTag_nnObb + ")");
+  // pt.AddText(Form("v0-pid-qa (" + gTag_nnObb + ")"));
 
   //  pt.AddText(Form("v0-pid-qa (w/o NN)"));
   arrHistos.Add(&pt);
@@ -197,7 +196,8 @@ void PublishCanvas(TDirectoryFile *qaList) {
     //
     if (strcmp(objName, "h2TPCnSigma_Pin_El") == 0 ||
         strcmp(objName, "h2TPCnSigma_Pin_Pi") == 0 ||
-        strcmp(objName, "h2TPCnSigma_Pin_Pr") == 0) {
+        strcmp(objName, "h2TPCnSigma_Pin_Pr") == 0 ||
+        strcmp(objName, "h2TPCnSigma_Pin_Ka") == 0) {
 
       TH2 *h = (TH2 *)qaList->FindObject(obj->GetName());
 

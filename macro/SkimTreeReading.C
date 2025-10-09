@@ -36,6 +36,8 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                   {"fPidIndex"})
           .Define("isPion", [](UChar_t fPidIndex) { return fPidIndex == 2; },
                   {"fPidIndex"})
+          /* .Define("isKaon", [](UChar_t fPidIndex) { return fPidIndex == 3; },
+                  {"fPidIndex"}) */
           .Define("isProton", [](UChar_t fPidIndex) { return fPidIndex == 4; },
                   {"fPidIndex"});
   // add processing bar
