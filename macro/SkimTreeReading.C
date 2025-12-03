@@ -36,8 +36,8 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                   {"fPidIndex"})
           .Define("isPion", [](UChar_t fPidIndex) { return fPidIndex == 2; },
                   {"fPidIndex"})
-          /* .Define("isKaon", [](UChar_t fPidIndex) { return fPidIndex == 3; },
-                  {"fPidIndex"}) */
+          .Define("isKaon", [](UChar_t fPidIndex) { return fPidIndex == 3; },
+                  {"fPidIndex"})
           .Define("isProton", [](UChar_t fPidIndex) { return fPidIndex == 4; },
                   {"fPidIndex"});
   // add processing bar
@@ -55,6 +55,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                            22030., 31840., 5.e4});
   StrVar4Hist var_fTgl("fTgl", "Tgl", "", 10, {-1, 1});
   StrVar4Hist var_pIn("pIn", "p_{in}", "GeV/c", 100, GetLogBin(100, 0.1, 10));
+  StrVar4Hist var_phi("fPhi", "#phi", "rad", 54, {0., 2. * TMath::Pi()});
 
   StrVar4Hist var_dEdx("dEdx", "dE/dx", "", 150, {10, 160});
   StrVar4Hist var_fNSigTPC("fNSigTPC", "n#sigma_{TPC}", "", 100, {-5, 5});
@@ -63,7 +64,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                              {-40, 40});
 
   /* #region: histrograms for separation power calculation */
-  vector<StrVar4Hist> vec_str_x = {var_fFt0Occ, var_fTgl};
+  vector<StrVar4Hist> vec_str_x = {var_fFt0Occ, var_fTgl, var_phi};
   vector<StrVar4Hist> vec_str_y = {var_dEdx, var_dEdx_exp, var_delta_dEdx,
                                    var_fNSigTPC};
 
@@ -76,7 +77,9 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
   };
 
   vector<array<string, 2>> conditions2_sepPower = {{"isElectron", "Electron"},
-                                                   {"isPion", "Pion"}};
+                                                   {"isPion", "Pion"},
+                                                   {"isKaon", "Kaon"},
+                                                   {"isProton", "Proton"}};
 
 #define obj2push_thnd(rdf2push, ...)                                           \
   TupleTHnDModel tuple_thnd = GetTHnDModelWithTitle(__VA_ARGS__);              \
@@ -98,6 +101,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                     {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, condition1,
                     tag);
 
+      auto rdf_selected = rdf.Filter(condition1).Filter(condition2);
       auto rdf_selected_mip = rdf_mip.Filter(condition1).Filter(condition2);
       // fFt0Occ,fTgl:dEdx,dEdx_exp,delta_dEdx,fNSigTPC
       for (auto str_x : vec_str_x) {
@@ -115,6 +119,11 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
           gRResultHandles.push_back(rdf_selected_mip.Histo2D(
               GetTH2DModelWithTitle(str_x, str_y,
                                     title + ";" + title_x + ";" + title_y, tag),
+              str_x.fName, str_y.fName));
+          gRResultHandles.push_back(rdf_selected.Histo2D(
+              GetTH2DModelWithTitle(str_x, str_y,
+                                    title + ";" + title_x + ";" + title_y,
+                                    tag + "_all"),
               str_x.fName, str_y.fName));
         }
       }
@@ -166,6 +175,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
       string tag2 = cond2[1];
 
       auto rdf_selected = rdf_withRun_mip.Filter(condition1).Filter(condition2);
+      auto rdf_selected_all = rdf_withRun.Filter(condition1).Filter(condition2);
 
       for (auto str_y : vec_str_y) {
         TString tag = tag1 + "_" + tag2;
@@ -179,6 +189,10 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
         gRResultHandles2.push_back(rdf_selected.Profile1D(
             {name, title + ";" + title_x + ";" + title_y, unique_runs.size(),
              -0.5, unique_runs.size() - 0.5},
+            "index_runNumber", str_y.fName));
+        gRResultHandles2.push_back(rdf_selected_all.Profile1D(
+            {name + "_all", title + ";" + title_x + ";" + title_y,
+             unique_runs.size(), -0.5, unique_runs.size() - 0.5},
             "index_runNumber", str_y.fName));
       }
     }
