@@ -98,10 +98,10 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
 
       auto rdf_selected = rdf.Filter(condition1).Filter(condition2);
       // pIn_fFt0Occ_fNSigTPC_fTgl
-      obj2push_thnd(rdf_selected,
-                    {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, condition1,
-                    tag);
-      for (auto str_y : vec_str_y) {
+      // obj2push_thnd(rdf_selected,
+      //               {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl},
+      //               condition1, tag);
+      for (auto str_y : {var_dEdx, var_fNSigTPC}) {
         obj2push_thnd(rdf_selected, {var_fEta, var_pIn, var_phi, str_y},
                       condition1, tag);
       }
