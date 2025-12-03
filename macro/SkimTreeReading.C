@@ -54,6 +54,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                           {0., 130., 1010., 2740., 5130., 8070., 11590., 16010.,
                            22030., 31840., 5.e4});
   StrVar4Hist var_fTgl("fTgl", "Tgl", "", 10, {-1, 1});
+  StrVar4Hist var_fEta("fEta", "#eta", "", 9, {-0.9, 0.9});
   StrVar4Hist var_pIn("pIn", "p_{in}", "GeV/c", 100, GetLogBin(100, 0.1, 10));
   StrVar4Hist var_phi("fPhi", "#phi", "rad", 54, {0., 2. * TMath::Pi()});
 
@@ -64,7 +65,7 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
                              {-40, 40});
 
   /* #region: histrograms for separation power calculation */
-  vector<StrVar4Hist> vec_str_x = {var_fFt0Occ, var_fTgl, var_phi};
+  vector<StrVar4Hist> vec_str_x = {var_fFt0Occ, var_fTgl};
   vector<StrVar4Hist> vec_str_y = {var_dEdx, var_dEdx_exp, var_delta_dEdx,
                                    var_fNSigTPC};
 
@@ -100,6 +101,10 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
       obj2push_thnd(rdf_selected,
                     {var_pIn, var_fFt0Occ, var_fNSigTPC, var_fTgl}, condition1,
                     tag);
+      for (auto str_y : vec_str_y) {
+        obj2push_thnd(rdf_selected, {var_fEta, var_pIn, var_phi, str_y},
+                      condition1, tag);
+      }
 
       auto rdf_selected_mip = rdf_mip.Filter(condition1).Filter(condition2);
       // fFt0Occ,fTgl:dEdx,dEdx_exp,delta_dEdx,fNSigTPC
@@ -119,11 +124,11 @@ void SkimTreeReading(TString path_input = "../config/SkimTreeReading.root",
               GetTH2DModelWithTitle(str_x, str_y,
                                     title + ";" + title_x + ";" + title_y, tag),
               str_x.fName, str_y.fName));
-          gRResultHandles.push_back(rdf_selected.Histo2D(
-              GetTH2DModelWithTitle(str_x, str_y,
-                                    title + ";" + title_x + ";" + title_y,
-                                    tag + "_all"),
-              str_x.fName, str_y.fName));
+          // gRResultHandles.push_back(rdf_selected.Histo2D(
+          //     GetTH2DModelWithTitle(str_x, str_y,
+          //                           title + ";" + title_x + ";" + title_y,
+          //                           tag + "_all"),
+          //     str_x.fName, str_y.fName));
         }
       }
     }
