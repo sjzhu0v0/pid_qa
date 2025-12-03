@@ -28,6 +28,7 @@ void DrawHist(TString name_observable = "", TString name_ncls = "",
     obs_eta_diff->SetDirectory(file_output);
     TH1D *mean_obs = obs_eta_diff->ProfileX(
         Form("mean_%s_eta_%d", name_observable.Data(), i));
+    mean_obs->GetYaxis()->SetTitle("#LT " + name_observable + " #GT");
     mean_obs->SetTitle(cond + ", Profile of " + name_observable);
     mean_obs->SetDirectory(file_output);
     MRootGraphic::StyleHistCommon(mean_obs);
@@ -42,7 +43,13 @@ void PhiCheck(
   // TFile *file_output = new TFile(path_output, "RECREATE");
   file_input = new TFile(path_input, "READ");
   file_output = new TFile(path_output, "RECREATE");
-  DrawHist("dEdx", "AllNcls", "Pion");
+  for (auto particle : {"Electron", "Pion", "Kaon", "Proton"}) {
+    for (auto ncls : {"highNcls", "lowNcls", "AllNcls"}) {
+      for (auto observable : {"dEdx", "fNSigTPC"}) {
+        DrawHist(observable, ncls, particle);
+      }
+    }
+  }
   file_output->Write();
   file_output->Close();
 }
